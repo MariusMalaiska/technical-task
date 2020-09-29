@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    button {
+      width: 200px;
+      margin: 10px;
+    }
+
+    .container {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      height: 600px;
+      width: 600px;
+    }
+
+    .cube {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 9.6%;
+      width: 9.6%;
+      border: 1px solid black;
+    }
+
+    .arrowContainer {
+      position: absolute;
+      margin: auto;
+    }
+
+    .arrow {
+      height: 20px;
+      width: 20px;
+      border-right: 8px solid black;
+      border-bottom: 8px solid black;
+      border-radius: 5px;
+      transform: rotate(225deg);
+    }
+
+    .task {
+      width: 600px;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <picture
+      ><img class="task" src="/Screenshot 2020-09-28 at 13.11.53.png"
+    /></picture>
+    <div class="buttons">
+      <button onclick="forward()" class="forward">forward</button>
+      <button onclick="right()" class="right">right</button>
+    </div>
+    <div class="container"></div>
+  </body>
+
+  <script>
+    let axisY = 10;
+    let axisX = 15;
+
+    let goUp = true;
+    let goDown = false;
+    let goLeft = false;
+    let goRight = false;
+
+    let rightCount = 0;
+
+    const container = document.querySelector(".container");
+
+    for (let cubes = 0; cubes < 100; cubes++) {
+      const cube = document.createElement("div");
+      cube.classList.add("cube");
+      container.appendChild(cube);
+    }
+
+    const arrowContainer = document.createElement("div");
+    const arrow = document.createElement("div");
+    arrow.classList.add("arrow");
+    arrowContainer.classList.add("arrowContainer");
+    arrowContainer.setAttribute(
+      "style",
+      `bottom: ${axisY}px; left: ${axisX}px;`
+    );
+    arrowContainer.appendChild(arrow);
+    container.appendChild(arrowContainer);
+
+    let forward = () => {
+      if (goUp && axisY < 550) {
+        axisY += 60;
+      } else if (goUp && axisY === 550) {
+        goUp = false;
+        goDown = true;
+        rightCount = 2;
+      } else if (goDown && axisY > 10) {
+        axisY -= 60;
+      } else if (goDown && axisY === 10) {
+        goUp = true;
+        goDown = false;
+        rightCount = 0;
+      } else if (goRight && axisX < 555) {
+        axisX += 60;
+      } else if (goRight && axisX === 555) {
+        goRight = false;
+        goLeft = true;
+        rightCount = 3;
+      } else if (goLeft && axisX === 15) {
+        goLeft = false;
+        goRight = true;
+        rightCount = 1;
+      } else if (goLeft && axisX <= 555) {
+        axisX -= 60;
+      }
+      move();
+    };
+
+    let right = () => {
+      rightCount += 1;
+      if (rightCount === 1) {
+        goUp = false;
+        goRight = true;
+      } else if (rightCount === 2) {
+        goRight = false;
+        goDown = true;
+      } else if (rightCount === 3) {
+        goLeft = true;
+        goDown = false;
+      } else if (rightCount === 4) {
+        goLeft = false;
+        goUp = true;
+        rightCount = 0;
+      }
+      move();
+    };
+
+    let move = () => {
+      arrowContainer.setAttribute(
+        "style",
+        `bottom: ${axisY}px; left: ${axisX}px;`
+      );
+      turn();
+    };
+
+    let turn = () => {
+      if (goDown) {
+        arrow.setAttribute("style", `transform: rotate(45deg);`);
+      } else if (goUp) {
+        arrow.setAttribute("style", `transform: rotate(225deg);`);
+      }
+
+      if (goRight) {
+        arrow.setAttribute("style", `transform: rotate(315deg);`);
+      } else if (goLeft) {
+        arrow.setAttribute("style", `transform: rotate(135deg);`);
+      }
+    };
+  </script>
+</html>
